@@ -1,107 +1,47 @@
 # CLAUDE.md — Skills Repository
 
-This repository stores **Claude Code skills** — reusable prompt-based capabilities that extend Claude Code's behavior within a workspace.
+This repository stores Claude Code skills — reusable prompt-based capabilities invoked via slash commands (e.g., `/commit`, `/grill`). Skills live in `skills/<skill-name>/SKILL.md`. For a list of available skills, see README.md.
 
-## What Are Skills?
+## Skill Loading Tiers
 
-Skills are named prompts invoked via slash commands (e.g., `/commit`, `/simplify`, `/loop`). When a user types `/<skill-name>`, Claude Code expands the skill into a full prompt and executes it in context. Skills are not executable scripts — they are structured natural-language instructions that Claude follows.
+- **Tier 1** (always in context): the `description` field from each `SKILL.md` frontmatter (~20 tokens/skill)
+- **Tier 2** (loaded when relevant): the full `SKILL.md` body, triggered by matching the description
+- **Tier 3** (loaded on demand): support files inside the skill folder, only when `SKILL.md` explicitly instructs Claude to load them
 
-## Repository Structure
-
-```
-skills/
-├── CLAUDE.md              # This file
-├── <skill-name>.md        # One file per skill
-└── ...
-```
-
-Each skill is a single Markdown file. The filename (without `.md`) is the slash command name used to invoke it.
-
-## Skill File Format
-
-A skill file should contain:
-
-1. **Trigger conditions** — when Claude should use this skill
-2. **Instructions** — what Claude should do when invoked
-3. **Examples** (optional) — sample inputs and expected behavior
-4. **Edge cases** (optional) — explicit guidance for unusual situations
-
-### Minimal Example (`greet.md`)
-
-```markdown
-Greet the user warmly using their name if provided. Keep it brief (one sentence).
-If no name is given, use "there" as a placeholder.
-```
-
-### Annotated Example (`commit.md`)
-
-```markdown
-Create a well-formatted git commit for staged changes.
-
-Steps:
-1. Run `git diff --staged` to review what will be committed
-2. Draft a commit message: imperative mood, ≤72 chars subject line
-3. Add a body paragraph if the change is non-trivial
-4. Run `git commit -m "..."` — never skip hooks (--no-verify)
-
-Do NOT commit if there are no staged changes. Warn the user instead.
-```
+Write descriptions precisely — they are the relevance signal that determines when a skill fires.
 
 ## Naming Conventions
 
 | Convention | Rule |
 |---|---|
-| File names | lowercase, hyphens only (e.g., `review-pr.md`) |
-| Slash command | matches filename without `.md` |
-| Verbs | prefer imperative verbs (`commit`, `simplify`, `loop`) |
-| Scope | one skill per file; no combined/multi-purpose skill files |
+| Skill folder name | lowercase, hyphens only (e.g., `review-pr`) |
+| Slash command | matches folder name exactly |
+| `name` in frontmatter | must match folder name exactly |
+| Tags | use category tags: `git`, `review`, `quality`, `docs`, `special` |
 
-## Development Workflow
+## Adding a New Skill
 
-### Adding a New Skill
-
-1. Create `<skill-name>.md` in the repo root
-2. Write clear, unambiguous instructions (see format above)
-3. Test locally by invoking `/<skill-name>` in a Claude Code session
-4. Commit with a descriptive message: `add <skill-name> skill`
-5. Push to a `claude/` prefixed branch and open a PR
-
-### Editing an Existing Skill
-
-1. Read the current file before editing
-2. Keep changes minimal and focused
-3. Commit: `update <skill-name>: <what changed>`
-
-### Removing a Skill
-
-1. Delete the `.md` file
-2. Commit: `remove <skill-name> skill`
-3. Update any references in other skill files or documentation
-
-## Writing Good Skills
-
-**Be explicit, not implicit.** Claude cannot infer unstated requirements. If a skill should never do X, say so.
-
-**One responsibility per skill.** A skill that does too many things is hard to invoke correctly and hard to maintain.
-
-**Use numbered steps for multi-step workflows.** This ensures consistent execution order.
-
-**State preconditions.** If a skill requires a git repo, a specific file type, or other context, state it upfront so Claude can fail fast with a useful message.
-
-**Avoid ambiguity around destructive actions.** If a skill can delete, overwrite, or publish something, explicitly require user confirmation or warn the user first.
+1. **Check for overlap first** — read README.md and scan existing skill descriptions. If a skill with similar purpose exists:
+   - Extend the existing skill if the new behavior is a variant of the same trigger
+   - Merge into the existing skill if both trigger on nearly identical user intent AND the combined SKILL.md body stays under ~400 tokens
+   - Only create a new skill if the purpose, trigger, and output are clearly distinct
+2. Create `skills/<skill-name>/SKILL.md` using the template in `skills/commit/SKILL.md` as reference
+3. Add an entry to README.md
+4. Commit: `add <skill-name> skill`
 
 ## Key Conventions for AI Assistants
 
-- **Do not generate code** unless a skill explicitly calls for it — most skills are workflow/orchestration prompts
-- **Do not create new skill files** unless the user explicitly requests a new skill
-- **Prefer editing** existing skill files over creating new ones
-- **Never rename** skill files without updating all references, as the filename is the slash command
-- **Test your understanding**: if a skill's purpose is unclear, re-read the file before invoking or editing it
-- **Branch naming**: all development branches must start with `claude/` (enforced by remote)
+- Do not create new skill files unless explicitly requested
+- Before creating a skill, always check for overlap with existing skills (see Adding a New Skill above)
+- Prefer editing existing skill files over creating new ones
+- When two skills have nearly identical triggers, merge them rather than maintaining duplicates — unless the merge would significantly increase the Tier 2 token cost
+- Never rename a skill folder without updating README.md and all cross-references
+- Skills with support files must explicitly instruct Claude to load them — Tier 3 is not automatic
+- If a skill's purpose is unclear, read its SKILL.md before invoking or editing it
 
 ## Git Practices
 
 - Branch format: `claude/<description>-<id>`
 - Push: `git push -u origin <branch-name>`
-- Never force-push, never skip hooks
+- Never force-push, never skip hooks (`--no-verify`)
 - Keep commits atomic: one logical change per commit
