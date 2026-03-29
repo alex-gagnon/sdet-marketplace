@@ -1,0 +1,84 @@
+{
+  "$schema": "https://sdet-marketplace.dev/schemas/marketplace.json",
+  "name": "sdet-marketplace",
+  "version": "1.0.0",
+  "description": "A marketplace of Claude Code plugins — skills, agents, and MCP servers for software development and testing workflows.",
+  "author": "alex-gagnon",
+  "license": "MIT",
+  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
+  "pluginTypes": ["skill", "agent", "mcp"],
+  "plugins": [
+    {
+      "name": "source-control",
+      "type": "skill",
+      "path": "skills/source-control",
+      "version": "1.0.0",
+      "description": "Handles git workflow operations — committing staged changes, creating or switching branches, and summarizing diffs — routing to the right sub-behavior from context.",
+      "tags": ["git"]
+    },
+    {
+      "name": "review-pr",
+      "type": "skill",
+      "path": "skills/review-pr",
+      "version": "1.0.0",
+      "description": "Reviews a pull request for logic errors, security issues, test coverage, and style — producing structured inline feedback.",
+      "tags": ["review"]
+    },
+    {
+      "name": "simplify",
+      "type": "skill",
+      "path": "skills/simplify",
+      "version": "1.0.0",
+      "description": "Refactors a code block or file to reduce complexity, improve readability, and eliminate redundancy without changing behavior.",
+      "tags": ["quality"]
+    },
+    {
+      "name": "add-tests",
+      "type": "skill",
+      "path": "skills/add-tests",
+      "version": "1.0.0",
+      "description": "Generates tests for an existing function or module, covering happy paths, edge cases, and error conditions.",
+      "tags": ["quality"]
+    },
+    {
+      "name": "document",
+      "type": "skill",
+      "path": "skills/document",
+      "version": "1.0.0",
+      "description": "Adds or improves inline documentation, docstrings, and README sections for a function, module, or project.",
+      "tags": ["docs"]
+    },
+    {
+      "name": "explain",
+      "type": "skill",
+      "path": "skills/explain",
+      "version": "1.0.0",
+      "description": "Explains a piece of code, architecture decision, or technical concept in plain language calibrated to the user's apparent expertise level.",
+      "tags": ["docs"]
+    },
+    {
+      "name": "grill",
+      "type": "skill",
+      "path": "skills/grill",
+      "version": "1.0.0",
+      "description": "Challenges a design, plan, or idea using Socratic questioning and devil's-advocate critique to surface hidden assumptions and weaknesses.",
+      "tags": ["special"]
+    },
+    {
+      "name": "test",
+      "type": "skill",
+      "path": "skills/test",
+      "version": "1.0.0",
+      "description": "Runs quality evaluations against one or all skills using their tests.md fixture files, scoring format compliance and semantic correctness.",
+      "tags": ["special"]
+    },
+    {
+      "name": "plugin-architect",
+      "type": "agent",
+      "path": "agents/plugin-architect",
+      "version": "1.0.0",
+      "description": "Assists with designing and scaffolding new marketplace plugins (skills, agents, and MCP servers) following marketplace conventions.",
+      "tags": ["special", "design"]
+    }
+  ]
+}

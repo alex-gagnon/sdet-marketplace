@@ -1,45 +1,58 @@
 # CLAUDE.md — SDET Marketplace
 
-This repository stores Claude Code skills — reusable prompt-based capabilities invoked via slash commands (e.g., `/source-control`, `/grill`). Skills live in `skills/<skill-name>/SKILL.md`. For a list of available skills, see README.md.
+This repository is a marketplace of Claude Code plugins — skills, agents, and MCP servers. All plugins are registered in `marketplace.json` and each has a `plugin.json` with metadata. Skills live in `skills/<name>/`, agents in `agents/<name>/`, and MCPs in `mcps/<name>/`. For the full catalog, see README.md.
 
-## Skill Loading Tiers
+## Plugin Types
 
-- **Tier 1** (always in context): the `description` field from each `SKILL.md` frontmatter (~20 tokens/skill)
-- **Tier 2** (loaded when relevant): the full `SKILL.md` body, triggered by matching the description
-- **Tier 3** (loaded on demand): support files inside the skill folder, only when `SKILL.md` explicitly instructs Claude to load them. Can be used as **sub-skills** — a parent skill detects intent and loads the matching sub-skill file (e.g., `source-control` loads `commit.md`, `branch.md`, or `summarize-diff.md`).
+| Type | Directory | Entrypoint | Description |
+|------|-----------|------------|-------------|
+| **Skill** | `skills/<name>/` | `SKILL.md` | Prompt-based capability invoked via slash command. Stateless, single-turn. |
+| **Agent** | `agents/<name>/` | `AGENT.md` | Autonomous multi-step workflow that orchestrates tools and sub-tasks. |
+| **MCP** | `mcps/<name>/` | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
 
-Write descriptions precisely — they are the relevance signal that determines when a skill fires.
+## Plugin Loading Tiers
+
+- **Tier 1** (always in context): the `description` field from each plugin's frontmatter (~20 tokens/plugin)
+- **Tier 2** (loaded when relevant): the full entrypoint body, triggered by matching the description
+- **Tier 3** (loaded on demand): support files inside the plugin folder, only when the entrypoint explicitly instructs Claude to load them. Can be used as **sub-skills** — a parent skill detects intent and loads the matching sub-skill file (e.g., `source-control` loads `commit.md`, `branch.md`, or `summarize-diff.md`).
+
+Write descriptions precisely — they are the relevance signal that determines when a plugin fires.
 
 ## Naming Conventions
 
 | Convention | Rule |
 |---|---|
-| Skill folder name | lowercase, hyphens only (e.g., `review-pr`) |
-| Slash command | matches folder name exactly |
-| `name` in frontmatter | must match folder name exactly |
-| Tags | use category tags: `git`, `review`, `quality`, `docs`, `special` |
+| Plugin folder name | lowercase, hyphens only (e.g., `review-pr`) |
+| Slash command (skills) | matches folder name exactly |
+| `name` in plugin.json and frontmatter | must match folder name exactly |
+| Tags | use category tags: `git`, `review`, `quality`, `docs`, `special`, `design`, `testing` |
 
-## Adding a New Skill
+## Adding a New Plugin
 
-1. **Check for overlap first** — read README.md and scan existing skill descriptions. If a skill with similar purpose exists:
-   - Extend the existing skill if the new behavior is a variant of the same trigger
-   - Merge into the existing skill if both trigger on nearly identical user intent AND the combined SKILL.md body stays under ~400 tokens
-   - Only create a new skill if the purpose, trigger, and output are clearly distinct
-2. Create `skills/<skill-name>/SKILL.md` using `skills/source-control/SKILL.md` as a template (with Tier 3 sub-behaviors) or a simpler single-purpose skill as needed
-3. Create `skills/<skill-name>/tests.md` with scenarios, a rubric, and a golden set (see existing `tests.md` files for format)
-4. Add an entry to README.md
-5. Add promptfoo assertions for the new skill's output format to `promptfoo.yaml`
-6. Commit: `add <skill-name> skill`
+1. **Check for overlap first** — read `marketplace.json` and scan existing plugin descriptions. If a plugin with similar purpose exists:
+   - Extend the existing plugin if the new behavior is a variant of the same trigger
+   - Merge into the existing plugin if both trigger on nearly identical user intent AND the combined entrypoint body stays under ~400 tokens
+   - Only create a new plugin if the purpose, trigger, and output are clearly distinct
+2. Create the plugin directory (`skills/<name>/`, `agents/<name>/`, or `mcps/<name>/`)
+3. Create `plugin.json` with all required fields (see existing plugins for examples)
+4. Create the entrypoint file (`SKILL.md`, `AGENT.md`, or `MCP.md`) using existing plugins as templates
+5. Create `tests.md` with scenarios, a rubric, and a golden set (see existing `tests.md` files for format)
+6. Add the plugin entry to `marketplace.json`
+7. Update README.md with the new plugin
+8. For skills: add promptfoo assertions to `promptfoo.yaml`
+9. Commit: `add <plugin-name> <plugin-type>`
+
+**Tip:** Use the **plugin-architect** agent to interactively design and scaffold new plugins.
 
 ## Key Conventions for AI Assistants
 
-- Do not create new skill files unless explicitly requested
-- Before creating a skill, always check for overlap with existing skills (see Adding a New Skill above)
-- Prefer editing existing skill files over creating new ones
-- When two skills have nearly identical triggers, merge them rather than maintaining duplicates — unless the merge would significantly increase the Tier 2 token cost
-- Never rename a skill folder without updating README.md and all cross-references
-- Skills with support files must explicitly instruct Claude to load them — Tier 3 is not automatic
-- If a skill's purpose is unclear, read its SKILL.md before invoking or editing it
+- Do not create new plugin files unless explicitly requested
+- Before creating a plugin, always check `marketplace.json` for overlap (see Adding a New Plugin above)
+- Prefer editing existing plugins over creating new ones
+- When two plugins have nearly identical triggers, merge them rather than maintaining duplicates — unless the merge would significantly increase the Tier 2 token cost
+- Never rename a plugin folder without updating `marketplace.json`, README.md, and all cross-references
+- Plugins with support files must explicitly instruct Claude to load them — Tier 3 is not automatic
+- If a plugin's purpose is unclear, read its entrypoint before invoking or editing it
 
 ## Git Practices
 

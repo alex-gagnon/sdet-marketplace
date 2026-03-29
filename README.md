@@ -1,10 +1,20 @@
 # SDET Marketplace
 
-A collection of Claude Code skills for common development workflows. Skills are invoked as slash commands in any Claude Code session where this repository is configured as the skills directory.
+A marketplace of Claude Code plugins — skills, agents, and MCP servers — for common software development and testing workflows. Plugins are organized by type and registered in `marketplace.json`.
 
-## Available Skills
+## Plugin Types
 
-| Skill | Command | Description | Sub-behaviors / Support Files |
+| Type | Directory | Entrypoint | Invocation |
+|------|-----------|------------|------------|
+| **Skill** | `skills/<name>/` | `SKILL.md` | Slash command (e.g., `/source-control`) |
+| **Agent** | `agents/<name>/` | `AGENT.md` | Agent tool or direct reference |
+| **MCP** | `mcps/<name>/` | `MCP.md` | MCP server configuration |
+
+## Available Plugins
+
+### Skills
+
+| Skill | Command | Description | Support Files |
 |---|---|---|---|
 | source-control | `/source-control` | Handles git workflow — routes to commit, branch, or diff summary based on context. | commit, branch, summarize-diff |
 | review-pr | `/review-pr` | Reviews a pull request for logic errors, security issues, test coverage, and style — producing structured inline feedback. | `checklist.md` |
@@ -15,23 +25,54 @@ A collection of Claude Code skills for common development workflows. Skills are 
 | grill | `/grill` | Challenges a design, plan, or idea using Socratic questioning and devil's-advocate critique to surface hidden assumptions and weaknesses. | `question-bank.md` |
 | test | `/test` | Runs quality evaluations against one or all skills using their tests.md fixture files, scoring format compliance and semantic correctness. | — |
 
-## Testing Skills
+### Agents
 
-Each skill has a `tests.md` file with scenarios, rubrics, and golden outputs. There are two ways to run tests:
+| Agent | Description |
+|---|---|
+| plugin-architect | Assists with designing and scaffolding new marketplace plugins (skills, agents, and MCP servers) following marketplace conventions. |
 
-**Semantic quality (LLM-as-judge)** — run the `/test` skill to evaluate all skills:
+### MCP Servers
+
+_No MCP servers yet. Use the plugin-architect agent to design one._
+
+## Marketplace Structure
+
+```
+sdet-marketplace/
+├── marketplace.json          # Central plugin registry
+├── skills/
+│   └── <skill-name>/
+│       ├── plugin.json       # Plugin metadata
+│       ├── SKILL.md          # Entrypoint (prompt)
+│       ├── tests.md          # Test scenarios and rubric
+│       └── *.md              # Support files (Tier 3)
+├── agents/
+│   └── <agent-name>/
+│       ├── plugin.json
+│       ├── AGENT.md
+│       └── tests.md
+└── mcps/
+    └── <mcp-name>/
+        ├── plugin.json
+        ├── MCP.md
+        └── tests.md
+```
+
+## Testing
+
+Each plugin has a `tests.md` file with scenarios, rubrics, and golden outputs. Two ways to test:
+
+**Semantic quality (LLM-as-judge)** — run the `/test` skill:
 ```
 /test                  # evaluate all skills
 /test source-control   # evaluate one skill
 ```
 
-**Format/schema assertions (CI)** — run promptfoo for deterministic checks:
+**Format/schema assertions (CI)** — run promptfoo:
 ```bash
 npx promptfoo eval           # run all format assertions
 npx promptfoo eval --ci      # CI mode (exits non-zero on failure)
 ```
-
-Promptfoo requires Node.js. Install it with `npm install -g promptfoo` or use `npx`.
 
 ## Installation
 
@@ -50,6 +91,6 @@ Or symlink:
 ln -s /path/to/this/repo/skills ~/.claude/skills
 ```
 
-## Adding a Skill
+## Adding a Plugin
 
-See [CLAUDE.md](./CLAUDE.md) for conventions and the `skills/source-control/SKILL.md` file as a template for skills with Tier 3 sub-behaviors.
+See [CLAUDE.md](./CLAUDE.md) for conventions, or use the **plugin-architect** agent to interactively design and scaffold a new plugin.
