@@ -20,21 +20,21 @@ Or for local development:
 
 ### Skills
 
-| Plugin | Command | Description |
-|--------|---------|-------------|
-| source-control | `/source-control` | Git workflow — routes to commit, branch, or diff summary based on context. |
-| review-pr | `/review-pr` | Reviews a pull request for logic errors, security issues, test coverage, and style. |
-| simplify | `/simplify` | Refactors code to reduce complexity and improve readability without changing behavior. |
-| add-tests | `/add-tests` | Generates tests covering happy paths, edge cases, and error conditions. |
-| document | `/document` | Adds or improves inline documentation, docstrings, and README sections. |
-| explain | `/explain` | Explains code or concepts in plain language calibrated to the user's expertise level. |
-| grill | `/grill` | Challenges a design using Socratic questioning to surface hidden assumptions. |
-| test | `/test` | Runs quality evaluations against plugins using their tests.md fixture files. |
+| Skill | Command | Description | Support Files |
+|-------|---------|-------------|---------------|
+| source-control | `/source-control` | Git workflow — routes to commit, branch, or diff summary based on context. | commit, branch, summarize-diff |
+| review-pr | `/review-pr` | Reviews a pull request for logic errors, security issues, test coverage, and style. | checklist.md |
+| simplify | `/simplify` | Refactors code to reduce complexity and improve readability without changing behavior. | patterns.md |
+| add-tests | `/add-tests` | Generates tests covering happy paths, edge cases, and error conditions. | test-strategies.md |
+| document | `/document` | Adds or improves inline documentation, docstrings, and README sections. | templates.md |
+| explain | `/explain` | Explains code or concepts in plain language calibrated to the user's expertise level. | — |
+| grill | `/grill` | Challenges a design using Socratic questioning to surface hidden assumptions. | question-bank.md |
+| test | `/test` | Runs quality evaluations against plugins using their tests.md fixture files. | — |
 
 ### Agents
 
-| Plugin | Description |
-|--------|-------------|
+| Agent | Description |
+|-------|-------------|
 | plugin-architect | Designs and scaffolds new marketplace plugins following official conventions. |
 
 ### MCP Servers
@@ -46,22 +46,23 @@ _None yet. Use the plugin-architect agent to design one._
 ```
 sdet-marketplace/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (all plugins listed here)
-├── plugins/
-│   └── <plugin-name>/
-│       ├── .claude-plugin/
-│       │   └── plugin.json       # Plugin manifest
-│       ├── skills/<name>/        # Skill plugins
-│       │   ├── SKILL.md
-│       │   ├── <support>.md      # Tier 3 support files
-│       │   └── tests.md
-│       ├── agents/<name>/        # Agent plugins
-│       │   ├── AGENT.md
-│       │   └── tests.md
-│       └── mcps/<name>/          # MCP plugins
-│           ├── MCP.md
-│           └── tests.md
-└── promptfoo.yaml                # CI format assertions
+│   └── marketplace.json     # Marketplace catalog (all plugins registered here)
+├── skills/
+│   └── <name>/
+│       ├── SKILL.md         # Entrypoint
+│       ├── plugin.json      # Plugin metadata
+│       ├── tests.md         # Test scenarios and rubric
+│       └── *.md             # Support files (Tier 3)
+├── agents/
+│   └── <name>/
+│       ├── AGENT.md
+│       ├── plugin.json
+│       └── tests.md
+└── mcps/
+    └── <name>/
+        ├── MCP.md
+        ├── plugin.json
+        └── tests.md
 ```
 
 ## Testing
