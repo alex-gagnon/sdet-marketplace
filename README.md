@@ -52,7 +52,7 @@ sdet-marketplace/
 │       ├── SKILL.md         # Entrypoint
 │       ├── plugin.json      # Plugin metadata
 │       ├── tests.md         # Test scenarios and rubric
-│       └── *.md             # Support files (Tier 3)
+│       └── *.md             # Support files
 ├── agents/
 │   └── <name>/
 │       ├── AGENT.md

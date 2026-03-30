@@ -10,14 +10,6 @@ This repository is a marketplace of Claude Code plugins — skills, agents, and 
 | **Agent** | `agents/<name>/` | `AGENT.md` | Autonomous multi-step workflow that orchestrates tools and sub-tasks. |
 | **MCP** | `mcps/<name>/` | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
 
-## Plugin Loading Tiers
-
-- **Tier 1** (always in context): the `description` field from each plugin's frontmatter (~20 tokens/plugin)
-- **Tier 2** (loaded when relevant): the full entrypoint body, triggered by matching the description
-- **Tier 3** (loaded on demand): support files inside the plugin folder, only when the entrypoint explicitly instructs Claude to load them. Can be used as **sub-skills** — a parent skill detects intent and loads the matching sub-skill file (e.g., `source-control` loads `commit.md`, `branch.md`, or `summarize-diff.md`).
-
-Write descriptions precisely — they are the relevance signal that determines when a plugin fires.
-
 ## Naming Conventions
 
 | Convention | Rule |
@@ -49,9 +41,8 @@ Write descriptions precisely — they are the relevance signal that determines w
 - Do not create new plugin files unless explicitly requested
 - Before creating a plugin, always check `.claude-plugin/marketplace.json` for overlap (see Adding a New Plugin above)
 - Prefer editing existing plugins over creating new ones
-- When two plugins have nearly identical triggers, merge them rather than maintaining duplicates — unless the merge would significantly increase the Tier 2 token cost
+- When two plugins have nearly identical triggers, merge them rather than maintaining duplicates
 - Never rename a plugin folder without updating `.claude-plugin/marketplace.json`, README.md, and all cross-references
-- Plugins with support files must explicitly instruct Claude to load them — Tier 3 is not automatic
 - If a plugin's purpose is unclear, read its entrypoint before invoking or editing it
 
 ## Git Practices
