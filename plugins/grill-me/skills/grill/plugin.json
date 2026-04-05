@@ -1,9 +1,0 @@
-{
-  "name": "grill",
-  "version": "1.0.0",
-  "description": "Challenges a design, plan, or idea using Socratic questioning and devil's-advocate critique to surface hidden assumptions and weaknesses.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["special"]
-}

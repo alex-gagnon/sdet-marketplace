@@ -1,9 +1,0 @@
-{
-  "name": "document",
-  "version": "1.0.0",
-  "description": "Adds or improves inline documentation, docstrings, and README sections for a function, module, or project.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["docs"]
-}

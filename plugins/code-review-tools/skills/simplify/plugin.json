@@ -1,9 +1,0 @@
-{
-  "name": "simplify",
-  "version": "1.0.0",
-  "description": "Refactors a code block or file to reduce complexity, improve readability, and eliminate redundancy without changing behavior.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["quality"]
-}

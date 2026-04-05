@@ -1,9 +1,0 @@
-{
-  "name": "explain",
-  "version": "1.0.0",
-  "description": "Explains a piece of code, architecture decision, or technical concept in plain language calibrated to the user's apparent expertise level.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["docs"]
-}

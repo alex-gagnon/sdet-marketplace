@@ -1,9 +1,0 @@
-{
-  "name": "review-pr",
-  "version": "1.0.0",
-  "description": "Reviews a pull request for logic errors, security issues, test coverage, and style — producing structured inline feedback.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["review"]
-}

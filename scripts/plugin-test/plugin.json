@@ -1,9 +1,0 @@
-{
-  "name": "test",
-  "version": "1.0.0",
-  "description": "Runs quality evaluations against one or all skills using their tests.md fixture files, scoring format compliance and semantic correctness.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["special"]
-}

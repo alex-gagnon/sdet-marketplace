@@ -1,9 +1,0 @@
-{
-  "name": "source-control",
-  "version": "1.0.0",
-  "description": "Handles git workflow operations — committing staged changes, creating or switching branches, and summarizing diffs — routing to the right sub-behavior from context.",
-  "author": { "name": "alex-gagnon" },
-  "license": "MIT",
-  "repository": "https://github.com/alex-gagnon/sdet-marketplace",
-  "tags": ["git"]
-}
