@@ -2,9 +2,9 @@
 import os
 from pathlib import Path
 
-# Repository root — two levels up from this file (sdk-agents/agentic-test-creator/)
-REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATES_DIR = REPO_ROOT / "plugins" / "agents" / "agentic-test-creator"
+# Repository root — three levels up from this file (plugins/sdet-tools/sdk/)
+REPO_ROOT = Path(__file__).resolve().parents[3]
+TEMPLATES_DIR = REPO_ROOT / "plugins" / "sdet-tools" / "agents" / "test-generator"
 
 
 class Config:

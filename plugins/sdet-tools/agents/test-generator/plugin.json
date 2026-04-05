@@ -1,5 +1,5 @@
 {
-  "name": "agentic-test-creator",
+  "name": "test-generator",
   "version": "1.0.0",
   "description": "Generates Playwright, Selenium, or REST API tests in Python from Jira epics, pull requests, or QA engineer acceptance criteria.",
   "author": {

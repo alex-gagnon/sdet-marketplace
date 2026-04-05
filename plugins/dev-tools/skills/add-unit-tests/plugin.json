@@ -1,7 +1,7 @@
 {
-  "name": "add-tests",
+  "name": "add-unit-tests",
   "version": "1.0.0",
-  "description": "Generates tests for an existing function or module, covering happy paths, edge cases, and error conditions.",
+  "description": "Generates unit tests for an existing function or module, covering happy paths, edge cases, and error conditions.",
   "author": { "name": "alex-gagnon" },
   "license": "MIT",
   "repository": "https://github.com/alex-gagnon/sdet-marketplace",

@@ -1,5 +1,5 @@
 ---
-name: agentic-test-creator
+name: test-generator
 version: 1.0.0
 description: Generates Playwright, Selenium, or REST API tests in Python from Jira epics, pull requests, or QA engineer acceptance criteria.
 tags: [testing]
@@ -54,6 +54,11 @@ Scan repo for:
 ```
 
 ## Rules
+
+# TODO: Add a hook that runs before any new test is written — checks whether the new test's
+# behavior can be combined into an existing test method on the same page/endpoint rather than
+# creating a separate test. Hook should surface: "This assertion shares a starting URL with
+# <existing_test> — consider combining rather than adding a new navigation."
 
 - Never generate tests for a feature described in only one sentence — ask for more AC detail first
 - Always include a docstring in each test citing the source (Jira key / PR number / AC line)

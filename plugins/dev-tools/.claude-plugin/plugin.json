@@ -1,0 +1,7 @@
+{
+  "name": "dev-tools",
+  "description": "Developer productivity skills — includes unit test generation for existing code.",
+  "author": {
+    "name": "alex-gagnon"
+  }
+}

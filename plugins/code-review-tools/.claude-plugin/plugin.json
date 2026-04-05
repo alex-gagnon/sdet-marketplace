@@ -1,0 +1,7 @@
+{
+  "name": "code-review-tools",
+  "description": "Skills for reviewing, simplifying, and understanding code — includes PR review, refactoring, source control, and code explanation.",
+  "author": {
+    "name": "alex-gagnon"
+  }
+}

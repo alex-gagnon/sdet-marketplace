@@ -1,0 +1,7 @@
+{
+  "name": "plugin-tools",
+  "description": "Tools for building and maintaining Claude Code marketplace plugins — includes the plugin-architect agent and documentation skill.",
+  "author": {
+    "name": "alex-gagnon"
+  }
+}

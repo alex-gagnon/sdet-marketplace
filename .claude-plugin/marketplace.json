@@ -5,81 +5,39 @@
   "homepage": "https://github.com/alex-gagnon/sdet-marketplace",
   "plugins": [
     {
-      "name": "source-control",
-      "source": "./plugins/skills/source-control",
-      "description": "Handles git workflow operations — committing staged changes, creating or switching branches, and summarizing diffs.",
+      "name": "code-review-tools",
+      "source": "./plugins/code-review-tools",
+      "description": "Skills for reviewing, simplifying, and understanding code — PR review, refactoring, source control, and code explanation.",
       "version": "1.0.0",
-      "tags": ["git"]
+      "tags": ["review", "quality", "git"]
     },
     {
-      "name": "review-pr",
-      "source": "./plugins/skills/review-pr",
-      "description": "Reviews a pull request for logic errors, security issues, test coverage, and style — producing structured inline feedback.",
-      "version": "1.0.0",
-      "tags": ["review"]
-    },
-    {
-      "name": "simplify",
-      "source": "./plugins/skills/simplify",
-      "description": "Refactors a code block or file to reduce complexity, improve readability, and eliminate redundancy without changing behavior.",
+      "name": "dev-tools",
+      "source": "./plugins/dev-tools",
+      "description": "Developer productivity skills — unit test generation for existing code.",
       "version": "1.0.0",
       "tags": ["quality"]
     },
     {
-      "name": "add-tests",
-      "source": "./plugins/skills/add-tests",
-      "description": "Generates tests for an existing function or module, covering happy paths, edge cases, and error conditions.",
+      "name": "sdet-tools",
+      "source": "./plugins/sdet-tools",
+      "description": "E2E and API test generation from Jira epics, PRs, or QA acceptance criteria — Claude Code agent, Agent SDK loop, and Jira MCP server.",
       "version": "1.0.0",
-      "tags": ["quality"]
+      "tags": ["testing"]
     },
     {
-      "name": "document",
-      "source": "./plugins/skills/document",
-      "description": "Adds or improves inline documentation, docstrings, and README sections for a function, module, or project.",
+      "name": "plugin-tools",
+      "source": "./plugins/plugin-tools",
+      "description": "Tools for building and maintaining Claude Code marketplace plugins — plugin-architect agent and documentation skill.",
       "version": "1.0.0",
-      "tags": ["docs"]
+      "tags": ["special", "design", "docs"]
     },
     {
-      "name": "explain",
-      "source": "./plugins/skills/explain",
-      "description": "Explains a piece of code, architecture decision, or technical concept in plain language calibrated to the user's apparent expertise level.",
-      "version": "1.0.0",
-      "tags": ["docs"]
-    },
-    {
-      "name": "grill",
-      "source": "./plugins/skills/grill",
+      "name": "grill-me",
+      "source": "./plugins/grill-me",
       "description": "Challenges a design, plan, or idea using Socratic questioning and devil's-advocate critique to surface hidden assumptions and weaknesses.",
       "version": "1.0.0",
       "tags": ["special"]
-    },
-    {
-      "name": "test",
-      "source": "./plugins/skills/test",
-      "description": "Runs quality evaluations against one or all skills using their tests.md fixture files, scoring format compliance and semantic correctness.",
-      "version": "1.0.0",
-      "tags": ["special"]
-    },
-    {
-      "name": "plugin-architect",
-      "source": "./plugins/agents/plugin-architect",
-      "description": "Assists with designing and scaffolding new marketplace plugins (skills, agents, and MCP servers) following marketplace conventions.",
-      "version": "1.0.0",
-      "tags": ["special", "design"]
-    },
-    {
-      "name": "agentic-test-creator",
-      "source": "./plugins/agents/agentic-test-creator",
-      "description": "Generates Playwright, Selenium, or REST API tests in Python from Jira epics, pull requests, or QA engineer acceptance criteria.",
-      "version": "1.0.0",
-      "tags": ["testing"]
-    },
-    {
-      "name": "jira",
-      "source": "./plugins/mcps/jira",
-      "description": "MCP server that exposes Jira epics and stories as callable tools for test generation agents.",
-      "version": "1.0.0",
-      "tags": ["testing"]
     }
   ]
 }

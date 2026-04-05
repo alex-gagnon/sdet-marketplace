@@ -1,0 +1,7 @@
+{
+  "name": "sdet-tools",
+  "description": "End-to-end and API test generation from Jira epics, pull requests, or QA acceptance criteria — includes a Claude Code agent, an autonomous Agent SDK loop, and a Jira MCP server.",
+  "author": {
+    "name": "alex-gagnon"
+  }
+}

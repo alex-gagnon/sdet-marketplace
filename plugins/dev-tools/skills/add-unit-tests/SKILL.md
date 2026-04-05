@@ -1,6 +1,6 @@
 ---
-name: add-tests
-description: Generates tests for an existing function or module, covering happy paths, edge cases, and error conditions.
+name: add-unit-tests
+description: Generates unit tests for an existing function or module, covering happy paths, edge cases, and error conditions.
 version: 1.0.0
 tags: [quality]
 ---

@@ -1,49 +1,75 @@
 # CLAUDE.md — SDET Marketplace
 
-This repository is a marketplace of Claude Code plugins — skills, agents, and MCP servers. All plugins are registered in `.claude-plugin/marketplace.json` and each has a `plugin.json` with metadata. Skills live in `plugins/skills/<name>/`, agents in `plugins/agents/<name>/`, and MCPs in `plugins/mcps/<name>/`. For the full catalog, see README.md.
+This repository is a marketplace of Claude Code plugins organized as domain toolkits. All toolkits are registered in `.claude-plugin/marketplace.json`. Each toolkit lives under `plugins/<toolkit-name>/` and has its own `.claude-plugin/plugin.json`. Within a toolkit, capabilities are organized by type: `skills/`, `agents/`, `sdk/`, `mcps/`. For the full catalog, see README.md.
+
+## Structure
+
+```
+plugins/<toolkit-name>/
+├── .claude-plugin/
+│   └── plugin.json          # Toolkit metadata (name, description, author)
+├── .mcp.json                # MCP server config (if toolkit includes an MCP)
+├── skills/
+│   └── <name>/
+│       ├── SKILL.md         # Entrypoint
+│       ├── plugin.json      # Skill metadata
+│       └── tests.md
+├── agents/
+│   └── <name>/
+│       ├── AGENT.md         # Entrypoint
+│       ├── plugin.json
+│       └── tests.md
+├── sdk/                     # Agent SDK implementation (if applicable)
+│   └── *.py
+└── mcps/
+    └── <name>/
+        ├── MCP.md
+        └── server/
+```
 
 ## Plugin Types
 
-| Type | Directory | Entrypoint | Description |
-|------|-----------|------------|-------------|
-| **Skill** | `plugins/skills/<name>/` | `SKILL.md` | Prompt-based capability invoked via slash command. Stateless, single-turn. |
-| **Agent** | `plugins/agents/<name>/` | `AGENT.md` | Autonomous multi-step workflow that orchestrates tools and sub-tasks. |
-| **MCP** | `plugins/mcps/<name>/` | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
+| Type | Entrypoint | Description |
+|------|------------|-------------|
+| **Skill** | `SKILL.md` | Prompt-based capability invoked via slash command. Stateless, single-turn. |
+| **Agent** | `AGENT.md` | Claude Code agent workflow. Human-in-the-loop, orchestrates tools and sub-tasks. |
+| **SDK Agent** | `sdk/*.py` | Autonomous Agent SDK loop. Reads flows/templates from the sibling `agents/` directory. |
+| **MCP** | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
 
 ## Naming Conventions
 
 | Convention | Rule |
 |---|---|
-| Plugin folder name | lowercase, hyphens only (e.g., `review-pr`) |
-| Slash command (skills) | matches folder name exactly |
+| Toolkit folder name | lowercase, hyphens only (e.g., `code-review-tools`) |
+| Skill/agent folder name | lowercase, hyphens only (e.g., `review-pr`) |
+| Slash command (skills) | matches skill folder name exactly |
 | `name` in plugin.json and frontmatter | must match folder name exactly |
 | Tags | use category tags: `git`, `review`, `quality`, `docs`, `special`, `design`, `testing` |
 
 ## Adding a New Plugin
 
-1. **Check for overlap first** — read `.claude-plugin/marketplace.json` and scan existing plugin descriptions. If a plugin with similar purpose exists:
-   - Extend the existing plugin if the new behavior is a variant of the same trigger
-   - Merge into the existing plugin if both trigger on nearly identical user intent AND the combined entrypoint body stays under ~400 tokens
-   - Only create a new plugin if the purpose, trigger, and output are clearly distinct
-2. Create the plugin directory (`plugins/skills/<name>/`, `plugins/agents/<name>/`, or `plugins/mcps/<name>/`)
-3. Create `plugin.json` with all required fields (see existing plugins for examples)
-4. Create the entrypoint file (`SKILL.md`, `AGENT.md`, or `MCP.md`) using existing plugins as templates
-5. Create `tests.md` with scenarios, a rubric, and a golden set (see existing `tests.md` files for format)
-6. Add the plugin entry to `.claude-plugin/marketplace.json`
-7. Update README.md with the new plugin
-8. For skills: add promptfoo assertions to `promptfoo.yaml`
-9. Commit: `add <plugin-name> <plugin-type>`
+1. **Check for overlap first** — read `.claude-plugin/marketplace.json` and scan existing toolkit descriptions. If a toolkit with similar purpose exists, add to it rather than creating a new one.
+2. Choose the right toolkit (or create one if clearly distinct)
+3. Create the capability directory under the appropriate type subfolder
+4. Create `plugin.json` with all required fields (see existing plugins for examples)
+5. Create the entrypoint file (`SKILL.md`, `AGENT.md`, or `MCP.md`) using existing plugins as templates
+6. Create `tests.md` with scenarios, a rubric, and a golden set
+7. Update the toolkit's `.claude-plugin/plugin.json` description if needed
+8. Update `.claude-plugin/marketplace.json` if a new toolkit was created
+9. Update README.md
+10. Commit: `add <toolkit>/<capability> <type>`
 
-**Tip:** Use the **plugin-architect** agent to interactively design and scaffold new plugins.
+**Tip:** Use the **plugin-architect** agent in `plugin-tools` to interactively design and scaffold new plugins.
 
 ## Key Conventions for AI Assistants
 
 - Do not create new plugin files unless explicitly requested
-- Before creating a plugin, always check `.claude-plugin/marketplace.json` for overlap (see Adding a New Plugin above)
-- Prefer editing existing plugins over creating new ones
+- Before creating a plugin, always check `.claude-plugin/marketplace.json` for overlap
+- Prefer adding to an existing toolkit over creating a new one
 - When two plugins have nearly identical triggers, merge them rather than maintaining duplicates
-- Never rename a plugin folder without updating `.claude-plugin/marketplace.json`, README.md, and all cross-references
+- Never rename a toolkit or plugin folder without updating `.claude-plugin/marketplace.json`, README.md, and all cross-references
 - If a plugin's purpose is unclear, read its entrypoint before invoking or editing it
+- The `scripts/` directory contains internal tooling (not user-facing plugins)
 
 ## Git Practices
 
