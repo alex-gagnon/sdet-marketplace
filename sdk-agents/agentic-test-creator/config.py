@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Repository root — two levels up from this file (sdk-agents/agentic-test-creator/)
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATES_DIR = REPO_ROOT / "agents" / "agentic-test-creator"
+TEMPLATES_DIR = REPO_ROOT / "plugins" / "agents" / "agentic-test-creator"
 
 
 class Config:

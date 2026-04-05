@@ -50,22 +50,25 @@ Or for local development:
 sdet-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json     # Marketplace catalog (all plugins registered here)
-├── skills/
-│   └── <name>/
-│       ├── SKILL.md         # Entrypoint
-│       ├── plugin.json      # Plugin metadata
-│       ├── tests.md         # Test scenarios and rubric
-│       └── *.md             # Support files
-├── agents/
-│   └── <name>/
-│       ├── AGENT.md
-│       ├── plugin.json
-│       └── tests.md
-└── mcps/
-    └── <name>/
-        ├── MCP.md
-        ├── plugin.json
-        └── tests.md
+├── plugins/
+│   ├── skills/
+│   │   └── <name>/
+│   │       ├── SKILL.md         # Entrypoint
+│   │       ├── plugin.json      # Plugin metadata
+│   │       ├── tests.md         # Test scenarios and rubric
+│   │       └── *.md             # Support files
+│   ├── agents/
+│   │   └── <name>/
+│   │       ├── AGENT.md
+│   │       ├── plugin.json
+│   │       └── tests.md
+│   └── mcps/
+│       └── <name>/
+│           ├── MCP.md
+│           ├── plugin.json
+│           └── tests.md
+├── test-apps/               # Local test targets (not plugins)
+└── tests/                   # Generated test output
 ```
 
 ## Testing

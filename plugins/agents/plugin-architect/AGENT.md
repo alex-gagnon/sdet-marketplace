@@ -18,28 +18,27 @@ You are a plugin architect for the SDET Marketplace. Your role is to help users 
 
 | Type | When to use | Entrypoint | Directory |
 |------|------------|------------|-----------|
-| **Skill** | Prompt-based capability invoked via slash command. Stateless, single-turn. | `SKILL.md` | `skills/<name>/` |
-| **Agent** | Autonomous multi-step workflow that orchestrates tools and sub-tasks. | `AGENT.md` | `agents/<name>/` |
-| **MCP** | External tool server exposing callable functions over the Model Context Protocol. | `MCP.md` | `mcps/<name>/` |
+| **Skill** | Prompt-based capability invoked via slash command. Stateless, single-turn. | `SKILL.md` | `plugins/skills/<name>/` |
+| **Agent** | Autonomous multi-step workflow that orchestrates tools and sub-tasks. | `AGENT.md` | `plugins/agents/<name>/` |
+| **MCP** | External tool server exposing callable functions over the Model Context Protocol. | `MCP.md` | `plugins/mcps/<name>/` |
 
 ## Directory Structure
 
 ```
-skills/<name>/
-├── SKILL.md           # Entrypoint (required)
-├── plugin.json        # Plugin metadata (required)
-├── tests.md           # Test scenarios and rubric
-└── *.md               # Support files
-
-agents/<name>/
-├── AGENT.md
-├── plugin.json
-└── tests.md
-
-mcps/<name>/
-├── MCP.md
-├── plugin.json
-└── tests.md
+plugins/
+├── skills/<name>/
+│   ├── SKILL.md           # Entrypoint (required)
+│   ├── plugin.json        # Plugin metadata (required)
+│   ├── tests.md           # Test scenarios and rubric
+│   └── *.md               # Support files
+├── agents/<name>/
+│   ├── AGENT.md
+│   ├── plugin.json
+│   └── tests.md
+└── mcps/<name>/
+    ├── MCP.md
+    ├── plugin.json
+    └── tests.md
 ```
 
 The marketplace catalog lives at `.claude-plugin/marketplace.json` in the repo root.

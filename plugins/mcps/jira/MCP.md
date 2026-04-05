@@ -20,10 +20,10 @@ The `jira` MCP server connects Claude Code agents to a Jira Cloud project via th
 1. Copy the example environment file and fill in your credentials:
 
 ```bash
-cp mcps/jira/server/.env.example mcps/jira/server/.env
+cp plugins/mcps/jira/server/.env.example plugins/mcps/jira/server/.env
 ```
 
-2. Edit `mcps/jira/server/.env`:
+2. Edit `plugins/mcps/jira/server/.env`:
 
 ```
 JIRA_BASE_URL=https://your-org.atlassian.net
@@ -34,7 +34,7 @@ JIRA_API_TOKEN=your-api-token-here
 3. Install dependencies:
 
 ```bash
-cd mcps/jira/server
+cd plugins/mcps/jira/server
 pip install -r requirements.txt
 ```
 
@@ -51,7 +51,7 @@ python server.py
   "mcpServers": {
     "jira": {
       "command": "python",
-      "args": ["/absolute/path/to/mcps/jira/server/server.py"],
+      "args": ["/absolute/path/to/plugins/mcps/jira/server/server.py"],
       "env": {
         "JIRA_BASE_URL": "https://your-org.atlassian.net",
         "JIRA_EMAIL": "your-email@example.com",

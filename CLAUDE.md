@@ -1,14 +1,14 @@
 # CLAUDE.md — SDET Marketplace
 
-This repository is a marketplace of Claude Code plugins — skills, agents, and MCP servers. All plugins are registered in `.claude-plugin/marketplace.json` and each has a `plugin.json` with metadata. Skills live in `skills/<name>/`, agents in `agents/<name>/`, and MCPs in `mcps/<name>/`. For the full catalog, see README.md.
+This repository is a marketplace of Claude Code plugins — skills, agents, and MCP servers. All plugins are registered in `.claude-plugin/marketplace.json` and each has a `plugin.json` with metadata. Skills live in `plugins/skills/<name>/`, agents in `plugins/agents/<name>/`, and MCPs in `plugins/mcps/<name>/`. For the full catalog, see README.md.
 
 ## Plugin Types
 
 | Type | Directory | Entrypoint | Description |
 |------|-----------|------------|-------------|
-| **Skill** | `skills/<name>/` | `SKILL.md` | Prompt-based capability invoked via slash command. Stateless, single-turn. |
-| **Agent** | `agents/<name>/` | `AGENT.md` | Autonomous multi-step workflow that orchestrates tools and sub-tasks. |
-| **MCP** | `mcps/<name>/` | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
+| **Skill** | `plugins/skills/<name>/` | `SKILL.md` | Prompt-based capability invoked via slash command. Stateless, single-turn. |
+| **Agent** | `plugins/agents/<name>/` | `AGENT.md` | Autonomous multi-step workflow that orchestrates tools and sub-tasks. |
+| **MCP** | `plugins/mcps/<name>/` | `MCP.md` | External tool server exposing callable functions over the Model Context Protocol. |
 
 ## Naming Conventions
 
@@ -25,7 +25,7 @@ This repository is a marketplace of Claude Code plugins — skills, agents, and 
    - Extend the existing plugin if the new behavior is a variant of the same trigger
    - Merge into the existing plugin if both trigger on nearly identical user intent AND the combined entrypoint body stays under ~400 tokens
    - Only create a new plugin if the purpose, trigger, and output are clearly distinct
-2. Create the plugin directory (`skills/<name>/`, `agents/<name>/`, or `mcps/<name>/`)
+2. Create the plugin directory (`plugins/skills/<name>/`, `plugins/agents/<name>/`, or `plugins/mcps/<name>/`)
 3. Create `plugin.json` with all required fields (see existing plugins for examples)
 4. Create the entrypoint file (`SKILL.md`, `AGENT.md`, or `MCP.md`) using existing plugins as templates
 5. Create `tests.md` with scenarios, a rubric, and a golden set (see existing `tests.md` files for format)
