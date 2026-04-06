@@ -55,6 +55,38 @@ Scan repo for:
 └── None found → ask: "Which test type? (1) Playwright E2E  (2) Selenium E2E  (3) REST API"
 ```
 
+## Test Value Classification
+
+Before writing any test, classify the behavior as **high**, **medium**, or **low** value for E2E/UI coverage. Only generate tests for medium or high value behaviors.
+
+### High value — always test
+- Multi-step user flows that cross page boundaries (login → dashboard, checkout → confirmation)
+- Form submission with server-side validation and inline error display
+- Authentication and authorization (access control, role-based redirects, session expiry)
+- State changes that persist across pages or sessions (cart updates, saved settings, profile edits)
+- Critical business workflows (checkout, payment, onboarding, account creation)
+- Error states and recovery paths (failed payment, network error, expired token)
+- Data-driven UI interactions where the backend response drives what the user sees
+
+### Medium value — test when directly covered by an AC
+- Happy-path navigation flows between major sections
+- Empty/zero-state and full/loaded-state rendering when controlled by real data
+- Conditional UI (show/hide based on user role or server state)
+- File upload, drag-and-drop, or other complex interactions
+
+### Low value — skip; note why in the summary
+- Static text content (h1/h2/h3 headings, labels, placeholder copy)
+- Page titles (`<title>` tag)
+- CSS properties, colors, fonts, spacing, layout
+- Presence of static images or icons
+- Footer links, copyright text, marketing copy
+- Any assertion that only verifies a hardcoded string that never changes at runtime
+- Structural DOM checks (element exists, tag is present) with no behavioral intent
+
+If an AC describes only low-value behavior, do **not** generate a test. Instead, note it in the `### Tests Generated` summary as: `Skipped: <AC text> — static content, better covered by visual regression or unit test.`
+
+If an AC mixes low- and high-value concerns (e.g. "page loads and shows username"), test the high-value part only (username driven by auth state) and omit the low-value part (page loaded).
+
 ## Rules
 
 # TODO: Add a hook that runs before any new test is written — checks whether the new test's
