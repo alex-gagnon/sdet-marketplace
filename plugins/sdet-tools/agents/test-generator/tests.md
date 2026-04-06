@@ -19,12 +19,12 @@
 
 ### 4. No framework detected → agent asks
 **Input:** Fresh repo with no test config. User says "Create tests from these ACs: [paste]".
-**Expected:** Agent detects no framework, asks exactly one question: "Which test type? (1) Playwright E2E  (2) Selenium E2E  (3) REST API  (4) pytest unit/integration". After user answers, proceeds with correct template.
+**Expected:** Agent detects no framework, asks exactly one question: "Which test type? (1) Playwright E2E  (2) Selenium E2E  (3) REST API". After user answers, proceeds with correct template.
 
-### 5. QA text → pytest unit tests
-**Input:** User pastes 3 ACs describing business logic for a `UserService`. Repo has `pytest.ini` present.
-**Framework detected:** `pytest.ini` found in repo root.
-**Expected:** Agent loads qa-flow.md, detects pytest framework, generates `conftest.py` with mock fixtures and `tests/unit/test_user_service.py` with a `class TestUserService` containing 3 test methods. Each method uses injected fixtures, has a docstring citing the AC, and uses `pytest.raises` for error cases. Output ends with `### Tests Generated` summary block.
+### 5. QA text → Playwright parametrized tests
+**Input:** User pastes ACs that cover the same login flow with multiple credential types (valid, invalid, locked). Repo has `playwright.config.py` and an existing `conftest.py` with `page`, `base_url`, and `authenticated_page` fixtures.
+**Framework detected:** playwright.config.py present.
+**Expected:** Agent reads the existing `conftest.py`, uses the existing fixture names (does not overwrite them), generates `test_login.py` with `@pytest.mark.parametrize` for the credential-variation cases, and applies any markers declared in `pytest.ini` or `pyproject.toml`. Output ends with `### Tests Generated` summary block.
 
 ## Rubric
 
@@ -34,7 +34,7 @@
 | Framework detection | Correctly identifies framework from repo signals or asks | Silently picks wrong framework |
 | Test function structure | Each test has a clear name, docstring citing source, and at least one assertion | Missing docstrings, vague names, or no assertions |
 | Template fidelity | Generated code matches the loaded template patterns | Mixes frameworks, wrong API used (e.g. JS Playwright) |
-| pytest fixture usage | pytest tests inject dependencies via fixtures; no inline instantiation of real dependencies | Real DB/network calls or hardcoded dependencies in test bodies |
+| Fixture reuse | Agent reads existing conftest.py and uses its fixture names; does not overwrite | Generates duplicate or conflicting fixtures |
 | Output summary | Ends with `### Tests Generated` block with file, source, framework, coverage | Missing or incomplete summary |
 | One question rule | If info is missing, asks exactly one focused question | Asks multiple questions at once or proceeds without needed info |
 
@@ -74,76 +74,55 @@ def test_invalid_password_shows_error(page: Page):
 
 ---
 
-### Golden 2 — pytest unit tests from QA text
+### Golden 2 — Playwright parametrized test from QA text
 
 **Input:**
 ```
-1. UserService.get_user returns the user dict when found.
-2. UserService.get_user raises NotFoundError when the user does not exist.
-3. UserService.create_user hashes the password before saving.
+1. User can log in with valid credentials and is redirected to /dashboard.
+2. User sees an error when entering an invalid password.
+3. User sees an error when entering an empty password.
 ```
-**Framework detected:** `pytest.ini` present.
+**Existing conftest.py fixtures:** `page` (function-scoped), `base_url` (session-scoped).
+**Framework detected:** playwright.config.py present.
 
-**Ideal conftest.py:**
+**Ideal output:**
 ```python
-# conftest.py
+# test_login.py
 import pytest
-from unittest.mock import MagicMock
+from playwright.sync_api import Page, expect
+import re
 
-@pytest.fixture
-def mock_repo():
-    repo = MagicMock()
-    repo.find_by_id.return_value = {"id": 1, "email": "user@example.com"}
-    return repo
-```
-
-**Ideal test file:**
-```python
-# tests/unit/test_user_service.py
-import pytest
-from unittest.mock import MagicMock
-
-from myapp.services.user_service import UserService, NotFoundError
+from pages.login_page import LoginPage
+from pages.dashboard_page import DashboardPage
 
 
-class TestUserService:
+class TestLogin:
 
-    def test_get_user_returns_user_when_found(self, mock_repo):
+    def test_valid_credentials_redirect_to_dashboard(self, page: Page):
         """
-        Source: AC-1 — UserService.get_user returns the user dict when found.
+        Source: AC-1 — valid credentials redirect to /dashboard.
         """
-        service = UserService(repo=mock_repo)
+        login_page = LoginPage(page)
+        login_page.login("user@example.com", "ValidPass123!")
+        DashboardPage(page).expect_loaded()
 
-        result = service.get_user(user_id=1)
-
-        mock_repo.find_by_id.assert_called_once_with(1)
-        assert result["id"] == 1
-
-    def test_get_user_raises_not_found_when_missing(self, mock_repo):
+    @pytest.mark.parametrize("password,expected_error", [
+        ("wrongpassword", "Invalid credentials"),
+        ("",              "Password is required"),
+    ])
+    def test_invalid_or_empty_password_shows_error(self, page: Page, password: str, expected_error: str):
         """
-        Source: AC-2 — UserService.get_user raises NotFoundError when user does not exist.
+        Source: AC-2, AC-3 — invalid or empty password shows an inline error.
         """
-        mock_repo.find_by_id.return_value = None
-        service = UserService(repo=mock_repo)
-
-        with pytest.raises(NotFoundError):
-            service.get_user(user_id=99)
-
-    def test_create_user_hashes_password_before_saving(self, mock_repo):
-        """
-        Source: AC-3 — UserService.create_user hashes the password before saving.
-        """
-        service = UserService(repo=mock_repo)
-
-        service.create_user(email="new@example.com", password="secret")
-
-        saved = mock_repo.save.call_args[0][0]
-        assert saved["password"] != "secret"
+        login_page = LoginPage(page)
+        login_page.login("user@example.com", password)
+        login_page.expect_error(expected_error)
+        expect(page).to_have_url(re.compile(r"/login"))
 ```
 
 ### Tests Generated
-- Files: `conftest.py`, `tests/unit/test_user_service.py`
-- Source: QA input (3 acceptance criteria → 3 test methods)
-- Framework: pytest (unit/integration, fixture-based isolation)
-- Pattern: Fixture-based isolation
-- Coverage: get_user happy path, get_user not-found error, create_user password hashing
+- Files: `pages/login_page.py`, `test_login.py`
+- Source: QA input (3 acceptance criteria → 2 test methods, 1 parametrized)
+- Framework: Playwright Python (pytest-playwright)
+- Pattern: Page Object Model
+- Coverage: valid login redirect, invalid password error, empty password error

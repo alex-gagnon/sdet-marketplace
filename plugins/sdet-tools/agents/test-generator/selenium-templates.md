@@ -205,7 +205,92 @@ def driver():
 
 ---
 
-## 6. Locator Strategies
+## 6. Pytest Integration Patterns
+
+### Reusing existing fixtures
+
+Before generating any `conftest.py` content, **read the existing file** and use its fixture names and scopes verbatim. Never overwrite existing fixtures.
+
+```python
+# If conftest.py already defines these, reference them by name — do not redefine:
+# base_url, driver, authenticated_driver
+```
+
+If the project already has an authenticated `driver` fixture, use it directly:
+
+```python
+def test_dashboard_shows_username(self, authenticated_driver, base_url):
+    """Source: AC-4 — authenticated user sees their name in the nav."""
+    dashboard = DashboardPage(authenticated_driver, base_url)
+    dashboard.navigate()
+    dashboard.wait_for_element_visible(DashboardPage.USERNAME_NAV)
+```
+
+### Authenticated driver fixture (add to conftest.py only if not already present)
+
+```python
+@pytest.fixture(scope="session")
+def authenticated_driver(base_url):
+    """
+    Log in once per session.
+    Use for tests that require an authenticated user.
+    """
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    drv = webdriver.Chrome(options=options)
+    drv.implicitly_wait(0)
+
+    login_page = LoginPage(drv, base_url)
+    login_page.login(
+        os.environ.get("TEST_USER_EMAIL", "user@example.com"),
+        os.environ.get("TEST_USER_PASSWORD", "ValidPass123!"),
+    )
+    WebDriverWait(drv, 10).until(EC.url_contains("/dashboard"))
+    yield drv
+    drv.quit()
+```
+
+### Parametrize — data-driven UI tests
+
+Use `@pytest.mark.parametrize` when the same UI flow must be exercised with multiple input combinations.
+
+```python
+@pytest.mark.parametrize("email,password,expected_error", [
+    ("user@example.com", "wrongpass",   "Invalid credentials"),
+    ("",                 "ValidPass1!", "Email is required"),
+    ("user@example.com", "",            "Password is required"),
+])
+def test_login_error_cases(self, driver, base_url, email, password, expected_error):
+    """
+    Source: AC-2, AC-3, AC-4 — various invalid inputs each show a specific inline error.
+    """
+    login_page = LoginPage(driver, base_url)
+    login_page.login(email, password)
+    assert expected_error in login_page.get_error_text()
+```
+
+### Pytest markers
+
+Read `pytest.ini` or `[tool.pytest.ini_options]` in `pyproject.toml` for declared markers before adding them. Only apply markers that are already registered.
+
+```python
+@pytest.mark.smoke
+def test_valid_login_redirects_to_dashboard(self, driver, base_url):
+    """Source: AC-1 — critical path smoke test."""
+    ...
+
+@pytest.mark.regression
+@pytest.mark.parametrize("password", ["", " ", "short"])
+def test_weak_passwords_blocked(self, driver, base_url, password):
+    """Source: AC-5 — weak or empty passwords are rejected at the form level."""
+    ...
+```
+
+---
+
+## 7. Locator Strategies
 
 ```python
 from selenium.webdriver.common.by import By
@@ -229,7 +314,7 @@ from selenium.webdriver.common.by import By
 
 ---
 
-## 7. Wait Patterns
+## 8. Wait Patterns
 
 Always use `WebDriverWait` with `expected_conditions`. Never use `time.sleep`.
 
@@ -259,7 +344,7 @@ WebDriverWait(driver, TIMEOUT).until(EC.invisibility_of_element_located(locator)
 
 ---
 
-## 8. Assertion Patterns
+## 9. Assertion Patterns
 
 ```python
 # URL
@@ -284,7 +369,7 @@ assert "Dashboard" in driver.title
 
 ---
 
-## 9. Complete Example — Login Feature (POM)
+## 10. Complete Example — Login Feature (POM)
 
 ```python
 # test_login.py

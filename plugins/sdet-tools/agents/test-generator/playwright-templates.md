@@ -211,7 +211,91 @@ def authenticated_page(authenticated_context: BrowserContext) -> Page:
 
 ---
 
-## 6. Locator Strategies
+## 6. Pytest Integration Patterns
+
+### Reusing existing fixtures
+
+Before generating any `conftest.py` content, **read the existing file** and use its fixture names and scopes verbatim. Never overwrite existing fixtures.
+
+```python
+# If conftest.py already defines these, import and reference them by name — do not redefine:
+# base_url, page, browser_context, authenticated_page, authenticated_context
+```
+
+If the existing `conftest.py` defines an `authenticated_page` fixture, use it directly in tests that require auth:
+
+```python
+def test_dashboard_shows_username(self, authenticated_page: Page):
+    """Source: AC-4 — authenticated user sees their name in the nav."""
+    dashboard = DashboardPage(authenticated_page)
+    dashboard.navigate()
+    expect(authenticated_page.get_by_role("navigation")).to_contain_text("Alice")
+```
+
+### Parametrize — data-driven UI tests
+
+Use `@pytest.mark.parametrize` when the same UI flow must be exercised with multiple input combinations. Never repeat the same page interaction logic in separate test methods when only the data differs.
+
+```python
+@pytest.mark.parametrize("email,password,expected_error", [
+    ("user@example.com", "wrongpass",   "Invalid credentials"),
+    ("",                 "ValidPass1!", "Email is required"),
+    ("user@example.com", "",            "Password is required"),
+])
+def test_login_error_cases(self, page: Page, email: str, password: str, expected_error: str):
+    """
+    Source: AC-2, AC-3, AC-4 — various invalid inputs each show a specific error.
+    """
+    login_page = LoginPage(page)
+    login_page.login(email, password)
+    login_page.expect_error(expected_error)
+```
+
+Parametrize IDs: use `ids=` when the default string representation is unclear.
+
+```python
+@pytest.mark.parametrize("role,destination", [
+    ("admin",  "/admin/dashboard"),
+    ("viewer", "/dashboard"),
+], ids=["admin-redirected", "viewer-redirected"])
+def test_post_login_redirect_by_role(self, page: Page, role: str, destination: str):
+    """Source: AC-5 — each role lands on their designated page after login."""
+    ...
+```
+
+### Pytest markers
+
+Read `pytest.ini` or `[tool.pytest.ini_options]` in `pyproject.toml` for declared markers before adding them. Only apply markers that are already registered to avoid warnings.
+
+```python
+@pytest.mark.smoke
+def test_valid_login_redirects_to_dashboard(self, page: Page):
+    """Source: AC-1 — critical path smoke test."""
+    ...
+
+@pytest.mark.regression
+@pytest.mark.parametrize("password", ["", " ", "short"])
+def test_weak_passwords_blocked(self, page: Page, password: str):
+    """Source: AC-6 — weak passwords are rejected."""
+    ...
+```
+
+### Custom fixture in conftest.py (only if not already present)
+
+Only add these to `conftest.py` when they do not already exist.
+
+```python
+@pytest.fixture
+def login_page(page: Page) -> LoginPage:
+    """Return a navigated LoginPage instance."""
+    lp = LoginPage(page)
+    lp.navigate()
+    return lp
+```
+
+---
+
+## 7. Locator Strategies
 
 Prefer locators in this order (most accessible → least):
 
@@ -241,7 +325,7 @@ page.get_by_test_id("submit-button")
 
 ---
 
-## 7. Assertion Patterns
+## 8. Assertion Patterns
 
 ```python
 from playwright.sync_api import Page, expect
@@ -270,7 +354,7 @@ expect(page.get_by_role("listitem")).to_have_count(5)
 
 ---
 
-## 8. Complete Example — Login Feature (POM)
+## 9. Complete Example — Login Feature (POM)
 
 ```python
 # test_login.py

@@ -49,16 +49,6 @@ def detect_framework(output_dir: str) -> str | None:
         if api_signals:
             return "api"
 
-        # pytest unit/integration signals
-        if (root / "pytest.ini").exists():
-            return "pytest"
-        pyproject = root / "pyproject.toml"
-        if pyproject.exists() and "[tool.pytest.ini_options]" in pyproject.read_text(errors="ignore"):
-            return "pytest"
-        setup_cfg = root / "setup.cfg"
-        if setup_cfg.exists() and "[tool:pytest]" in setup_cfg.read_text(errors="ignore"):
-            return "pytest"
-
     return None
 
 
@@ -71,7 +61,6 @@ def _load_template(framework: str) -> str:
         "playwright": TEMPLATES_DIR / "playwright-templates.md",
         "selenium": TEMPLATES_DIR / "selenium-templates.md",
         "api": TEMPLATES_DIR / "api-templates.md",
-        "pytest": TEMPLATES_DIR / "pytest-templates.md",
     }
     path = mapping.get(framework)
     if path and path.exists():
@@ -96,7 +85,6 @@ def build_prompt(context: TestContext, framework: str, output_dir: str) -> str:
         "playwright": "Playwright Python (pytest-playwright)",
         "selenium": "Selenium Python (pytest + selenium WebDriver)",
         "api": "REST API (pytest + requests, Service Object pattern)",
-        "pytest": "pytest (unit/integration, fixture-based isolation)",
     }.get(framework, framework)
 
     template = _load_template(framework)
@@ -129,16 +117,13 @@ Write all output files to: `{output_dir}`
    - If `pages/` or `clients/` directories exist, append to them rather than
      overwriting.
 
-3. **Generate the supporting file first**:
+3. **Generate the page/client class first**:
    - E2E (Playwright/Selenium): write `{output_dir}/pages/<feature>_page.py`
      with a class inheriting `BasePage`. Locators are class-level constants.
    - API: write `{output_dir}/clients/<feature>_client.py` inheriting
      `BaseClient`. Each endpoint is a method returning `Response`.
-   - pytest unit/integration: write or append to `{output_dir}/conftest.py`
-     with pytest fixtures for shared dependencies (mocks, DB connections, etc.).
-     Do NOT generate a pages/ or clients/ directory.
-   - If `base_page.py` / `base_client.py` do not exist (E2E/API), create them
-     using the template above verbatim.
+   - If `base_page.py` / `base_client.py` do not exist, create them using the
+     template above verbatim.
 
 4. **Generate the test file**: `{output_dir}/test_<feature>.py`
    - Use `class Test<Feature>` with one method per AC.
