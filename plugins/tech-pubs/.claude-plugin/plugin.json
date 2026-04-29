@@ -1,0 +1,9 @@
+{
+  "name": "tech-pubs",
+  "version": "1.0.0",
+  "description": "Technical documentation skill — write, audit, and improve READMEs and developer-facing docs for software projects.",
+  "author": { "name": "alex-gagnon" },
+  "license": "MIT",
+  "repository": "https://github.com/alex-gagnon/personal-marketplace",
+  "tags": ["docs", "readme", "technical-writing", "developer-experience"]
+}

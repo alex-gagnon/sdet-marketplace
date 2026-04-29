@@ -45,6 +45,13 @@
       "description": "API development agent for Python/FastAPI projects — TDD, feature implementation, code review, and multi-step agentic workflows.",
       "version": "1.0.0",
       "tags": ["api", "backend", "testing", "quality"]
+    },
+    {
+      "name": "tech-pubs",
+      "source": "./plugins/tech-pubs",
+      "description": "Technical documentation skill — write, audit, and improve READMEs and developer-facing docs for software projects.",
+      "version": "1.0.0",
+      "tags": ["docs"]
     }
   ]
 }
